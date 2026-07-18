@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project neptune | telemetry</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-transform: lowercase;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        body {
+            background-color: #050505;
+            color: #00ffff;
+            padding: 2rem;
+        }
+        h1 {
+            border-bottom: 1px solid #00ffff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            border: 1px solid #00ffff;
+            padding: 1.5rem;
+            background: rgba(0, 255, 255, 0.05);
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        th {
+            background: rgba(0, 255, 255, 0.1);
+        }
+        tr:hover {
+            background: rgba(0, 255, 255, 0.05);
+        }
+        .action-execute {
+            background-color: #00ffff;
+            color: #050505;
+            padding: 0.2rem 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>project neptune :: operations</h1>
+
+    <div class="grid">
+        <div class="stat-box">
+            <div class="stat-label">engine status</div>
+            <div class="stat-value" id="status-val">monitoring</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">latest score</div>
+            <div class="stat-value" id="score-val">0.0000</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">total operations</div>
+            <div class="stat-value" id="count-val">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">active mode</div>
+            <div class="stat-value" id="mode-val">unknown</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>timestamp</th>
+                <th>ticker</th>
+                <th>action</th>
+                <th>score</th>
+                <th>telemetry log</th>
+            </tr>
+        </thead>
+        <tbody id="log-body">
+            <!-- javascript injects rows here -->
+        </tbody>
+    </table>
+
+    <script>
+        // input your project credentials here
+        const SUPABASE_URL = 'your_supabase_project_url';
+        const SUPABASE_ANON_KEY = 'your_supabase_anon_key';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const logBody = document.getElementById('log-body');
+        const countVal = document.getElementById('count-val');
+        const scoreVal = document.getElementById('score-val');
+        const modeVal = document.getElementById('mode-val');
+        let totalCount = 0;
+
+        function renderRow(log) {
+            const tr = document.createElement('tr');
+            const date = new Date(log.created_at).toLocaleString();
+            const score = Number(log.inference_score).toFixed(4);
+            const isExec = log.action === 'execute';
+            
+            tr.innerHTML = `
+                <td>${date}</td>
+                <td>${log.ticker}</td>
+                <td><span class="${isExec ? 'action-execute' : ''}">${log.action}</span></td>
+                <td>${score}</td>
+                <td>${log.log_message}</td>
+            `;
+            logBody.prepend(tr);
+
+            // update widgets
+            totalCount++;
+            countVal.innerText = totalCount;
+            scoreVal.innerText = score;
+            modeVal.innerText = log.mode;
+        }
+
+        async function fetchInitialState() {
+            const { data, error } = await supabase
+                .from('neptune_logs')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(50);
+            
+            if (data) {
+                data.forEach(log => renderRow(log));
+            }
+        }
+
+        function subscribeToTelemetry() {
+            supabase
+                .channel('neptune_channel')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'neptune_logs' }, payload => {
+                    renderRow(payload.new);
+                })
+                .subscribe();
+        }
+
+        fetchInitialState();
+        subscribeToTelemetry();
+    </script>
+</body>
+</html>
