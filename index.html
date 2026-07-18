@@ -3,152 +3,476 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>project neptune | telemetry</title>
+    <title>PROJECT NEPTUNE | ONNX Live Engine</title>
+    <!-- Supabase & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts for Terminal Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-base: #030712;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(0, 229, 255, 0.2);
+            --cyan: #00e5ff;
+            --cyan-glow: 0 0 10px rgba(0, 229, 255, 0.5);
+            --green: #39ff14;
+            --red: #ff003c;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            text-transform: lowercase;
-            font-family: 'Courier New', Courier, monospace;
         }
+
         body {
-            background-color: #050505;
-            color: #00ffff;
-            padding: 2rem;
+            background-color: var(--bg-base);
+            background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, transparent 70%);
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            padding: 1.5rem;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        h1 {
-            border-bottom: 1px solid #00ffff;
-            padding-bottom: 0.5rem;
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cyan);
+            padding-bottom: 1rem;
             margin-bottom: 2rem;
-            letter-spacing: 2px;
+            box-shadow: 0 4px 20px -10px var(--cyan);
         }
-        .grid {
+        .title-group h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cyan);
+            letter-spacing: 3px;
+            font-size: 2rem;
+            text-transform: uppercase;
+            text-shadow: var(--cyan-glow);
+        }
+        .title-group p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            text-transform: lowercase;
+        }
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid var(--green);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+        }
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background-color: var(--green);
+            border-radius: 50%;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes ping {
+            75%, 100% { transform: scale(2); opacity: 0; }
+        }
+
+        /* --- Dashboard Grid --- */
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
+
+        /* --- Panels --- */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cyan);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        /* --- Top KPIs --- */
+        .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         .stat-box {
-            border: 1px solid #00ffff;
-            padding: 1.5rem;
-            background: rgba(0, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .stat-box:hover {
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+            box-shadow: var(--cyan-glow);
         }
         .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.7;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 0.5rem;
         }
         .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
         }
+        .val-cyan { color: var(--cyan); }
+        .val-green { color: var(--green); }
+        .val-red { color: var(--red); }
+
+        /* --- Chart Section --- */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        /* --- Table Section --- */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .table-container::-webkit-scrollbar { width: 6px; }
+        .table-container::-webkit-scrollbar-track { background: #000; }
+        .table-container::-webkit-scrollbar-thumb { background: var(--cyan); }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            font-size: 0.85rem;
         }
         th, td {
             text-align: left;
-            padding: 1rem;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         th {
-            background: rgba(0, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            background: #0f172a;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
         }
-        tr:hover {
-            background: rgba(0, 255, 255, 0.05);
-        }
-        .action-execute {
-            background-color: #00ffff;
-            color: #050505;
+        tr:hover { background: rgba(0, 229, 255, 0.05); }
+        
+        .badge {
             padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
             font-weight: bold;
+            text-transform: uppercase;
         }
+        .badge-exec { background: rgba(57, 255, 20, 0.2); color: var(--green); border: 1px solid var(--green); }
+        .badge-hold { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid var(--text-muted); }
+        .badge-err  { background: rgba(255, 0, 60, 0.2); color: var(--red); border: 1px solid var(--red); }
+
+        /* --- Sidebar Specifics --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .mini-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.8rem 0;
+            font-size: 0.85rem;
+        }
+        .mini-stat:last-child { border: none; }
     </style>
 </head>
 <body>
 
-    <h1>project neptune :: operations</h1>
+    <header>
+        <div class="title-group">
+            <h1>project neptune</h1>
+            <p>15m spot alpha // onnx telemetry ops</p>
+        </div>
+        <div class="status-badge" id="live-status">
+            <div class="pulse"></div>
+            <span id="status-text">WSL ENGINE LIVE</span>
+        </div>
+    </header>
 
-    <div class="grid">
+    <div class="kpi-grid">
         <div class="stat-box">
-            <div class="stat-label">engine status</div>
-            <div class="stat-value" id="status-val">monitoring</div>
+            <div class="stat-label">Model Inference (Last)</div>
+            <div class="stat-value val-cyan" id="score-val">0.0000</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">latest score</div>
-            <div class="stat-value" id="score-val">0.0000</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-label">total operations</div>
+            <div class="stat-label">Total Operations</div>
             <div class="stat-value" id="count-val">0</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">active mode</div>
-            <div class="stat-value" id="mode-val">unknown</div>
+            <div class="stat-label">Executions (Veto Cleared)</div>
+            <div class="stat-value val-green" id="exec-val">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Holds (Veto Blocked)</div>
+            <div class="stat-value" id="hold-val">0</div>
+        </div>
+        <!-- Placeholders ready for backend PnL updates -->
+        <div class="stat-box">
+            <div class="stat-label">Est. Session ROI</div>
+            <div class="stat-value val-green" id="roi-val">+0.00%</div>
         </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>timestamp</th>
-                <th>ticker</th>
-                <th>action</th>
-                <th>score</th>
-                <th>telemetry log</th>
-            </tr>
-        </thead>
-        <tbody id="log-body">
-            <!-- javascript injects rows here -->
-        </tbody>
-    </table>
+    <div class="dashboard-wrapper">
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="panel" style="margin-bottom: 1.5rem;">
+                <div class="panel-title">Alpha Matrix Brainwave (Real-Time Inference)</div>
+                <div class="chart-container">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Live Telemetry Feed</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Ticker</th>
+                                <th>Action</th>
+                                <th>Alpha Score</th>
+                                <th>Log Output</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log-body">
+                            <!-- JS injects rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Area -->
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-title">Engine Config</div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Active Mode</span>
+                    <strong class="val-cyan" id="mode-val">PENDING</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Veto Threshold</span>
+                    <strong>0.4807</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Timeframe</span>
+                    <strong>15m</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Model Type</span>
+                    <strong>XGBoost / ONNX</strong>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Performance Analytics</div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Execution Rate</span>
+                    <strong id="exec-rate-val">0%</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Avg Alpha Score</span>
+                    <strong id="avg-score-val">0.0000</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Session Equity (Est.)</span>
+                    <strong class="val-green">$1,000.00</strong>
+                </div>
+                <div class="mini-stat">
+                    <span style="color: var(--text-muted)">Win Rate (Ready)</span>
+                    <strong>--%</strong>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // input your project credentials here
+        // Supabase Init
         const SUPABASE_URL = 'https://bpizkikscieyhzajrrrg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_UwkvMmq91Y5jS1PEJ9IE_w_vN5-JWUP';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // DOM Elements
         const logBody = document.getElementById('log-body');
         const countVal = document.getElementById('count-val');
         const scoreVal = document.getElementById('score-val');
         const modeVal = document.getElementById('mode-val');
-        let totalCount = 0;
+        const execVal = document.getElementById('exec-val');
+        const holdVal = document.getElementById('hold-val');
+        const execRateVal = document.getElementById('exec-rate-val');
+        const avgScoreVal = document.getElementById('avg-score-val');
 
-        function renderRow(log) {
+        // State Tracking
+        let totalCount = 0;
+        let execCount = 0;
+        let holdCount = 0;
+        let scoreSum = 0;
+        
+        // Chart.js Setup
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        const scoreChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Inference Score',
+                        data: [],
+                        borderColor: '#00e5ff',
+                        backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff',
+                        pointRadius: 2,
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Veto Threshold',
+                        data: [],
+                        borderColor: '#ff003c',
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { min: 0, max: 1, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#e5e7eb', font: { family: 'Fira Code' } } },
+                    tooltip: { mode: 'index', intersect: false }
+                }
+            }
+        });
+
+        function updateChart(timestamp, score) {
+            const timeStr = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Push new data
+            scoreChart.data.labels.push(timeStr);
+            scoreChart.data.datasets[0].data.push(score);
+            scoreChart.data.datasets[1].data.push(0.4807); // Hardcoded threshold line
+
+            // Keep max 50 points on chart
+            if (scoreChart.data.labels.length > 50) {
+                scoreChart.data.labels.shift();
+                scoreChart.data.datasets[0].data.shift();
+                scoreChart.data.datasets[1].data.shift();
+            }
+            scoreChart.update();
+        }
+
+        function renderRow(log, isInitialLoad = false) {
             const tr = document.createElement('tr');
             const date = new Date(log.created_at).toLocaleString();
-            const score = Number(log.inference_score).toFixed(4);
-            const isExec = log.action === 'execute';
+            const score = Number(log.inference_score);
+            const scoreDisplay = score.toFixed(4);
+            
+            let badgeClass = 'badge-hold';
+            if (log.action === 'execute') badgeClass = 'badge-exec';
+            if (log.action === 'error') badgeClass = 'badge-err';
             
             tr.innerHTML = `
-                <td>${date}</td>
-                <td>${log.ticker}</td>
-                <td><span class="${isExec ? 'action-execute' : ''}">${log.action}</span></td>
-                <td>${score}</td>
-                <td>${log.log_message}</td>
+                <td style="color: var(--text-muted);">${date}</td>
+                <td><strong>${log.ticker}</strong></td>
+                <td><span class="badge ${badgeClass}">${log.action}</span></td>
+                <td class="${score >= 0.4807 ? 'val-green' : 'val-cyan'}">${scoreDisplay}</td>
+                <td style="opacity: 0.8;">${log.log_message}</td>
             `;
+            
+            // Add to top of table
             logBody.prepend(tr);
 
-            // update widgets
+            // Update Global Stats
             totalCount++;
+            if (log.action === 'execute') execCount++;
+            if (log.action === 'hold') holdCount++;
+            scoreSum += score;
+
             countVal.innerText = totalCount;
-            scoreVal.innerText = score;
-            modeVal.innerText = log.mode;
+            execVal.innerText = execCount;
+            holdVal.innerText = holdCount;
+            scoreVal.innerText = scoreDisplay;
+            modeVal.innerText = log.mode.toUpperCase();
+            
+            if (log.mode === 'paper') modeVal.className = 'val-cyan';
+            if (log.mode === 'live') modeVal.className = 'val-green';
+
+            const execRate = ((execCount / totalCount) * 100).toFixed(1);
+            execRateVal.innerText = `${execRate}%`;
+            avgScoreVal.innerText = (scoreSum / totalCount).toFixed(4);
+
+            // Only update chart one-by-one if it's a live update, else chart is built in batch
+            if (!isInitialLoad) updateChart(log.created_at, score);
         }
 
         async function fetchInitialState() {
+            // Fix: Order descending to get newest 50, but we will reverse them for the chart
             const { data, error } = await supabase
                 .from('neptune_logs')
                 .select('*')
-                .order('created_at', { ascending: true })
+                .order('created_at', { ascending: false })
                 .limit(50);
             
-            if (data) {
-                data.forEach(log => renderRow(log));
+            if (data && data.length > 0) {
+                // To display oldest to newest on the chart, reverse the fetched array
+                const chronologicalData = [...data].reverse();
+                
+                chronologicalData.forEach(log => {
+                    updateChart(log.created_at, Number(log.inference_score));
+                });
+
+                // Render rows in the table (prepending chronological data means newest ends up on top)
+                chronologicalData.forEach(log => renderRow(log, true));
             }
         }
 
