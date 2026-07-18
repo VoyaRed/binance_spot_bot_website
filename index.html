@@ -456,22 +456,26 @@
         }
 
         async function fetchInitialState() {
-            // Fix: Order descending to get newest 50, but we will reverse them for the chart
             const { data, error } = await supabase
                 .from('neptune_logs')
                 .select('*')
                 .order('created_at', { ascending: false })
                 .limit(50);
             
+            // 🚨 THIS WILL POP UP AN ALERT IF SUPABASE BLOCKS THE REQUEST
+            if (error) {
+                console.error("Supabase Error Details:", error);
+                alert(`⚠️ SUPABASE ERROR: ${error.message}\n\nCheck your console (F12) for more details.`);
+                return;
+            }
+
             if (data && data.length > 0) {
-                // To display oldest to newest on the chart, reverse the fetched array
                 const chronologicalData = [...data].reverse();
                 
                 chronologicalData.forEach(log => {
                     updateChart(log.created_at, Number(log.inference_score));
                 });
 
-                // Render rows in the table (prepending chronological data means newest ends up on top)
                 chronologicalData.forEach(log => renderRow(log, true));
             }
         }
