@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT NEPTUNE | ONNX Live Engine</title>
+    <title>PROJECT NEPTUNE | LIVE COMMAND CENTER</title>
     <!-- Supabase & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts for Terminal Look --> a
+    <!-- Google Fonts for Terminal Look -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-base: #030712;
-            --panel-bg: rgba(17, 24, 39, 0.7);
-            --border-color: rgba(0, 229, 255, 0.2);
+            --bg-base: #02040a;
+            --panel-bg: rgba(10, 15, 25, 0.85);
+            --border-color: rgba(0, 229, 255, 0.3);
             --cyan: #00e5ff;
-            --cyan-glow: 0 0 10px rgba(0, 229, 255, 0.5);
+            --cyan-glow: 0 0 15px rgba(0, 229, 255, 0.6);
             --green: #39ff14;
+            --green-glow: 0 0 15px rgba(57, 255, 20, 0.6);
             --red: #ff003c;
+            --red-glow: 0 0 15px rgba(255, 0, 60, 0.6);
             --text-main: #e5e7eb;
-            --text-muted: #9ca3af;
+            --text-muted: #6b7280;
+            --warning: #ffb703;
         }
 
         * {
@@ -31,7 +34,10 @@
 
         body {
             background-color: var(--bg-base);
-            background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, transparent 70%);
+            background-image: 
+                linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: var(--text-main);
             font-family: 'Fira Code', monospace;
             padding: 1.5rem;
@@ -44,57 +50,62 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--cyan);
+            border-bottom: 2px solid var(--cyan);
             padding-bottom: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 20px -10px var(--cyan);
         }
         .title-group h1 {
             font-family: 'Orbitron', sans-serif;
             color: var(--cyan);
-            letter-spacing: 3px;
-            font-size: 2rem;
+            letter-spacing: 4px;
+            font-size: 2.2rem;
             text-transform: uppercase;
             text-shadow: var(--cyan-glow);
         }
         .title-group p {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-top: 0.3rem;
-            text-transform: lowercase;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(57, 255, 20, 0.1);
+            gap: 12px;
+            background: rgba(57, 255, 20, 0.05);
             border: 1px solid var(--green);
-            padding: 0.5rem 1rem;
+            padding: 0.7rem 1.5rem;
             border-radius: 4px;
             font-family: 'Orbitron', sans-serif;
             color: var(--green);
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+            box-shadow: var(--green-glow);
+            font-size: 1.1rem;
         }
         .pulse {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background-color: var(--green);
             border-radius: 50%;
-            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
         @keyframes ping {
-            75%, 100% { transform: scale(2); opacity: 0; }
+            75%, 100% { transform: scale(2.5); opacity: 0; }
         }
 
-        /* --- Dashboard Grid --- */
+        /* --- Master Grid --- */
+        .master-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
         .dashboard-wrapper {
             display: grid;
             grid-template-columns: 3fr 1fr;
             gap: 1.5rem;
-        }
-
-        @media (max-width: 1200px) {
-            .dashboard-wrapper { grid-template-columns: 1fr; }
         }
 
         /* --- Panels --- */
@@ -104,7 +115,15 @@
             border-radius: 8px;
             padding: 1.5rem;
             backdrop-filter: blur(10px);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 4px 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0.5;
         }
         .panel-title {
             font-family: 'Orbitron', sans-serif;
@@ -114,12 +133,54 @@
             border-bottom: 1px dashed var(--border-color);
             padding-bottom: 0.5rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
         }
+
+        /* --- Giant Price Panel --- */
+        .price-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .live-price {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            margin: 1rem 0;
+            transition: color 0.3s;
+        }
+        .price-up { color: var(--green); text-shadow: var(--green-glow); }
+        .price-down { color: var(--red); text-shadow: var(--red-glow); }
+        
+        /* --- Active Trade Panel --- */
+        .trade-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+        .data-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .data-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        .data-val { font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem; }
+        .pnl-giant { font-family: 'Orbitron', sans-serif; font-size: 3rem; margin-top: 1rem; }
 
         /* --- Top KPIs --- */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -129,91 +190,36 @@
             padding: 1.2rem;
             border-radius: 4px;
             text-align: center;
-            transition: all 0.3s ease;
         }
-        .stat-box:hover {
-            border-color: var(--cyan);
-            transform: translateY(-2px);
-            box-shadow: var(--cyan-glow);
-        }
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff;
-        }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
         .val-cyan { color: var(--cyan); }
         .val-green { color: var(--green); }
         .val-red { color: var(--red); }
+        .val-warn { color: var(--warning); }
 
-        /* --- Chart Section --- */
-        .chart-container {
-            position: relative;
-            height: 350px;
-            width: 100%;
-        }
-
-        /* --- Table Section --- */
-        .table-container {
-            max-height: 600px;
-            overflow-y: auto;
-        }
+        /* --- Chart & Table Section --- */
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        .tv-container { height: 500px; width: 100%; margin-bottom: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; box-shadow: var(--cyan-glow); }
+        
+        .table-container { max-height: 400px; overflow-y: auto; }
         .table-container::-webkit-scrollbar { width: 6px; }
         .table-container::-webkit-scrollbar-track { background: #000; }
         .table-container::-webkit-scrollbar-thumb { background: var(--cyan); }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        th, td {
-            text-align: left;
-            padding: 0.8rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        th {
-            position: sticky;
-            top: 0;
-            background: #0f172a;
-            color: var(--cyan);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            z-index: 10;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        th { position: sticky; top: 0; background: #0a0f19; color: var(--cyan); text-transform: uppercase; z-index: 10; border-bottom: 1px solid var(--cyan); }
         tr:hover { background: rgba(0, 229, 255, 0.05); }
         
-        .badge {
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .badge-exec { background: rgba(57, 255, 20, 0.2); color: var(--green); border: 1px solid var(--green); }
-        .badge-hold { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid var(--text-muted); }
-        .badge-err  { background: rgba(255, 0, 60, 0.2); color: var(--red); border: 1px solid var(--red); }
+        .badge { padding: 0.3rem 0.6rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .badge-exec { background: rgba(57, 255, 20, 0.15); color: var(--green); border: 1px solid var(--green); box-shadow: 0 0 5px rgba(57,255,20,0.3); }
+        .badge-hold { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--text-muted); }
+        .badge-err  { background: rgba(255, 0, 60, 0.15); color: var(--red); border: 1px solid var(--red); }
 
         /* --- Sidebar Specifics --- */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .mini-stat {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.8rem 0;
-            font-size: 0.85rem;
-        }
+        .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+        .mini-stat { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 0.8rem 0; font-size: 0.85rem; }
         .mini-stat:last-child { border: none; }
     </style>
 </head>
@@ -222,35 +228,100 @@
     <header>
         <div class="title-group">
             <h1>project neptune</h1>
-            <p>15m spot alpha // onnx telemetry ops</p>
+            <p>COMMAND CONSOLE // ORBITAL VIEW</p>
         </div>
         <div class="status-badge" id="live-status">
             <div class="pulse"></div>
-            <span id="status-text">WSL ENGINE LIVE</span>
+            <span id="status-text">SYSTEM ARMED & LIVE</span>
         </div>
     </header>
 
+    <!-- TOP ROW: TICKER & TRADE STATUS -->
+    <div class="master-grid">
+        <div class="panel price-panel">
+            <div class="panel-title" style="border: none; margin: 0; font-size: 1.5rem;">ETH/USDT LIVE INDEX</div>
+            <div class="live-price" id="giant-price">LOADING...</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">BINANCE.US WEBSOCKET STREAM</div>
+        </div>
+
+        <div class="panel" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div class="panel-title" style="width: 100%;">
+                <span>ACTIVE DEPLOYMENT STATUS</span>
+                <span id="trade-status-badge" class="badge badge-hold">FLAT</span>
+            </div>
+            
+            <div id="no-trade-view" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                <div style="font-size: 2rem; color: var(--text-muted); font-family: 'Orbitron';">AWAITING ALPHA SIGNAL</div>
+            </div>
+
+            <div id="active-trade-view" style="display: none; width: 100%;">
+                <div class="trade-data">
+                    <div class="data-box">
+                        <div class="data-label">Entry Price</div>
+                        <div class="data-val val-cyan" id="trade-entry">$0.00</div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-label">Breakeven Shield / Stop</div>
+                        <div class="data-val val-warn" id="trade-stop">$0.00</div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="data-label" style="margin-top: 1rem;">UNREALIZED PnL</div>
+                    <div class="pnl-giant" id="trade-pnl">0.00%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MIDDLE ROW: TRADINGVIEW -->
+    <div class="tv-container">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+          <div id="tradingview_eth" style="height: 100%; width: 100%;"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+          new TradingView.widget({
+          "autosize": true,
+          "symbol": "BINANCEUS:ETHUSDT",
+          "interval": "15",
+          "timezone": "Etc/UTC",
+          "theme": "dark",
+          "style": "1",
+          "locale": "en",
+          "enable_publishing": false,
+          "backgroundColor": "rgba(10, 15, 25, 0.85)",
+          "gridColor": "rgba(0, 229, 255, 0.05)",
+          "hide_top_toolbar": false,
+          "hide_legend": false,
+          "save_image": false,
+          "container_id": "tradingview_eth",
+          "studies": [
+            "RSI@tv-basicstudies",
+            "EMACross@tv-basicstudies"
+          ]
+        });
+          </script>
+        </div>
+        <!-- TradingView Widget END -->
+    </div>
+
+    <!-- KPI GRID -->
     <div class="kpi-grid">
         <div class="stat-box">
-            <div class="stat-label">Model Inference (Last)</div>
+            <div class="stat-label">Model Inference</div>
             <div class="stat-value val-cyan" id="score-val">0.0000</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Total Operations</div>
+            <div class="stat-label">Total Cycles</div>
             <div class="stat-value" id="count-val">0</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Executions (Veto Cleared)</div>
+            <div class="stat-label">Executions</div>
             <div class="stat-value val-green" id="exec-val">0</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Holds (Veto Blocked)</div>
+            <div class="stat-label">Holds (Veto)</div>
             <div class="stat-value" id="hold-val">0</div>
-        </div>
-        <!-- Placeholders ready for backend PnL updates -->
-        <div class="stat-box">
-            <div class="stat-label">Est. Session ROI</div>
-            <div class="stat-value val-green" id="roi-val">+0.00%</div>
         </div>
     </div>
 
@@ -258,22 +329,21 @@
         <!-- Main Content Area -->
         <div class="main-content">
             <div class="panel" style="margin-bottom: 1.5rem;">
-                <div class="panel-title">Alpha Matrix Brainwave (Real-Time Inference)</div>
+                <div class="panel-title">Alpha Matrix Brainwave (15m Intervals)</div>
                 <div class="chart-container">
                     <canvas id="scoreChart"></canvas>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-title">Live Telemetry Feed</div>
+                <div class="panel-title">System Telemetry Log</div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
-                                <th>Ticker</th>
                                 <th>Action</th>
-                                <th>Alpha Score</th>
+                                <th>Score</th>
                                 <th>Log Output</th>
                             </tr>
                         </thead>
@@ -298,44 +368,40 @@
                     <strong>0.4807</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Timeframe</span>
-                    <strong>15m</strong>
+                    <span style="color: var(--text-muted)">Target Asset</span>
+                    <strong>ETH/USDT</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Model Type</span>
-                    <strong>XGBoost / ONNX</strong>
+                    <span style="color: var(--text-muted)">Execution Base</span>
+                    <strong>ONNX Runtime</strong>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-title">Performance Analytics</div>
+                <div class="panel-title">Execution Analytics</div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Execution Rate</span>
+                    <span style="color: var(--text-muted)">Action Rate</span>
                     <strong id="exec-rate-val">0%</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Avg Alpha Score</span>
+                    <span style="color: var(--text-muted)">Avg Inference</span>
                     <strong id="avg-score-val">0.0000</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Session Equity (Est.)</span>
-                    <strong class="val-green">$1,000.00</strong>
-                </div>
-                <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Win Rate (Ready)</span>
-                    <strong>--%</strong>
+                    <span style="color: var(--text-muted)">Candles Held (Avg)</span>
+                    <strong class="val-cyan">--</strong>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Supabase Init
+        // Supabase Init[cite: 11]
         var SUPABASE_URL = 'https://bpizkikscieyhzajrrrg.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_UwkvMmq91Y5jS1PEJ9IE_w_vN5-JWUP';
         var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // DOM Elements
+        // DOM Elements[cite: 11]
         const logBody = document.getElementById('log-body');
         const countVal = document.getElementById('count-val');
         const scoreVal = document.getElementById('score-val');
@@ -344,14 +410,45 @@
         const holdVal = document.getElementById('hold-val');
         const execRateVal = document.getElementById('exec-rate-val');
         const avgScoreVal = document.getElementById('avg-score-val');
+        const giantPrice = document.getElementById('giant-price');
 
-        // State Tracking
+        // Trade Panel Elements
+        const noTradeView = document.getElementById('no-trade-view');
+        const activeTradeView = document.getElementById('active-trade-view');
+        const tradeStatusBadge = document.getElementById('trade-status-badge');
+        const tradeEntry = document.getElementById('trade-entry');
+        const tradeStop = document.getElementById('trade-stop');
+        const tradePnl = document.getElementById('trade-pnl');
+
+        // State Tracking[cite: 11]
         let totalCount = 0;
         let execCount = 0;
         let holdCount = 0;
         let scoreSum = 0;
+        let currentEthPrice = 0;
+        let activePosition = null;
+        let lastPrice = 0;
         
-        // Chart.js Setup
+        // --- BINANCE WEBSOCKET FOR GIANT PRICE ---
+        const ws = new WebSocket('wss://stream.binance.us:9443/ws/ethusdt@ticker');
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            currentEthPrice = parseFloat(data.c);
+            
+            giantPrice.innerText = `$${currentEthPrice.toFixed(2)}`;
+            
+            if (currentEthPrice > lastPrice) {
+                giantPrice.className = 'live-price price-up';
+            } else if (currentEthPrice < lastPrice) {
+                giantPrice.className = 'live-price price-down';
+            }
+            lastPrice = currentEthPrice;
+
+            // Recalculate PnL instantly on every websocket tick if in a trade
+            if (activePosition) updateLivePnL();
+        };
+
+        // Chart.js Setup[cite: 11]
         const ctx = document.getElementById('scoreChart').getContext('2d');
         const scoreChart = new Chart(ctx, {
             type: 'line',
@@ -384,8 +481,8 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { ticks: { color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    y: { min: 0, max: 1, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    x: { ticks: { color: '#6b7280', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: { min: 0, max: 1, ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                 },
                 plugins: {
                     legend: { labels: { color: '#e5e7eb', font: { family: 'Fira Code' } } },
@@ -396,19 +493,56 @@
 
         function updateChart(timestamp, score) {
             const timeStr = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            // Push new data
             scoreChart.data.labels.push(timeStr);
             scoreChart.data.datasets[0].data.push(score);
-            scoreChart.data.datasets[1].data.push(0.4807); // Hardcoded threshold line
-
-            // Keep max 50 points on chart
+            scoreChart.data.datasets[1].data.push(0.4807); 
             if (scoreChart.data.labels.length > 50) {
                 scoreChart.data.labels.shift();
                 scoreChart.data.datasets[0].data.shift();
                 scoreChart.data.datasets[1].data.shift();
             }
             scoreChart.update();
+        }
+
+        function updateLivePnL() {
+            if (!activePosition || currentEthPrice === 0) return;
+            const entry = parseFloat(activePosition.entry_price);
+            const profitPct = ((currentEthPrice - entry) / entry) * 100;
+            
+            tradePnl.innerText = `${profitPct > 0 ? '+' : ''}${profitPct.toFixed(3)}%`;
+            if (profitPct > 0) {
+                tradePnl.className = 'pnl-giant val-green';
+                tradeStatusBadge.innerText = 'IN PROFIT';
+                tradeStatusBadge.className = 'badge badge-exec';
+            } else {
+                tradePnl.className = 'pnl-giant val-red';
+                tradeStatusBadge.innerText = 'DRAWDOWN';
+                tradeStatusBadge.className = 'badge badge-err';
+            }
+        }
+
+        async function fetchActivePositions() {
+            const { data, error } = await supabase
+                .from('neptune_positions')
+                .select('*')
+                .eq('status', 'open')
+                .limit(1);
+
+            if (data && data.length > 0) {
+                activePosition = data[0];
+                noTradeView.style.display = 'none';
+                activeTradeView.style.display = 'block';
+                tradeEntry.innerText = `$${parseFloat(activePosition.entry_price).toFixed(2)}`;
+                tradeStop.innerText = `$${parseFloat(activePosition.stop_loss).toFixed(2)}`;
+                tradeStatusBadge.innerText = 'IN TRADE';
+                tradeStatusBadge.className = 'badge badge-exec';
+            } else {
+                activePosition = null;
+                noTradeView.style.display = 'flex';
+                activeTradeView.style.display = 'none';
+                tradeStatusBadge.innerText = 'FLAT';
+                tradeStatusBadge.className = 'badge badge-hold';
+            }
         }
 
         function renderRow(log, isInitialLoad = false) {
@@ -420,71 +554,79 @@
             let badgeClass = 'badge-hold';
             if (log.action === 'execute') badgeClass = 'badge-exec';
             if (log.action === 'error') badgeClass = 'badge-err';
+            if (log.action === 'win' || log.action === 'loss' || log.action === 'breakeven') badgeClass = 'badge-exec';
             
             tr.innerHTML = `
                 <td style="color: var(--text-muted);">${date}</td>
-                <td><strong>${log.ticker}</strong></td>
                 <td><span class="badge ${badgeClass}">${log.action}</span></td>
                 <td class="${score >= 0.4807 ? 'val-green' : 'val-cyan'}">${scoreDisplay}</td>
                 <td style="opacity: 0.8;">${log.log_message}</td>
             `;
             
-            // Add to top of table
             logBody.prepend(tr);
 
-            // Update Global Stats
-            totalCount++;
-            if (log.action === 'execute') execCount++;
-            if (log.action === 'hold') holdCount++;
-            scoreSum += score;
+            if (log.action === 'execute' || log.action === 'hold' || log.action === 'shield_skip') {
+                totalCount++;
+                if (log.action === 'execute') execCount++;
+                if (log.action === 'hold' || log.action === 'shield_skip') holdCount++;
+                scoreSum += score;
 
-            countVal.innerText = totalCount;
-            execVal.innerText = execCount;
-            holdVal.innerText = holdCount;
-            scoreVal.innerText = scoreDisplay;
-            modeVal.innerText = log.mode.toUpperCase();
-            
-            if (log.mode === 'paper') modeVal.className = 'val-cyan';
-            if (log.mode === 'live') modeVal.className = 'val-green';
+                countVal.innerText = totalCount;
+                execVal.innerText = execCount;
+                holdVal.innerText = holdCount;
+                scoreVal.innerText = scoreDisplay;
+                modeVal.innerText = log.mode.toUpperCase();
+                
+                if (log.mode === 'paper') modeVal.className = 'val-cyan';
+                if (log.mode === 'live') modeVal.className = 'val-green';
 
-            const execRate = ((execCount / totalCount) * 100).toFixed(1);
-            execRateVal.innerText = `${execRate}%`;
-            avgScoreVal.innerText = (scoreSum / totalCount).toFixed(4);
+                const execRate = ((execCount / totalCount) * 100).toFixed(1);
+                execRateVal.innerText = `${execRate}%`;
+                avgScoreVal.innerText = (scoreSum / totalCount).toFixed(4);
 
-            // Only update chart one-by-one if it's a live update, else chart is built in batch
-            if (!isInitialLoad) updateChart(log.created_at, score);
+                if (!isInitialLoad) updateChart(log.created_at, score);
+            }
         }
 
         async function fetchInitialState() {
+            // Get Logs
             const { data, error } = await supabase
                 .from('neptune_logs')
                 .select('*')
                 .order('created_at', { ascending: false })
                 .limit(50);
             
-            // 🚨 THIS WILL POP UP AN ALERT IF SUPABASE BLOCKS THE REQUEST
             if (error) {
                 console.error("Supabase Error Details:", error);
-                alert(`⚠️ SUPABASE ERROR: ${error.message}\n\nCheck your console (F12) for more details.`);
                 return;
             }
 
             if (data && data.length > 0) {
                 const chronologicalData = [...data].reverse();
-                
                 chronologicalData.forEach(log => {
-                    updateChart(log.created_at, Number(log.inference_score));
+                    if (log.inference_score > 0) updateChart(log.created_at, Number(log.inference_score));
                 });
-
                 chronologicalData.forEach(log => renderRow(log, true));
             }
+
+            // Check if holding a position
+            await fetchActivePositions();
         }
 
         function subscribeToTelemetry() {
+            // Listen for Logs
             supabase
-                .channel('neptune_channel')
+                .channel('neptune_logs_channel')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'neptune_logs' }, payload => {
                     renderRow(payload.new);
+                })
+                .subscribe();
+
+            // Listen for Position changes (Open/Close)
+            supabase
+                .channel('neptune_positions_channel')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'neptune_positions' }, payload => {
+                    fetchActivePositions();
                 })
                 .subscribe();
         }
