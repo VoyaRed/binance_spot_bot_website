@@ -26,11 +26,7 @@
             --warning: #ffb703;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-base);
@@ -47,160 +43,73 @@
 
         /* --- Header --- */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--cyan);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--cyan); padding-bottom: 1rem; margin-bottom: 1.5rem;
             box-shadow: 0 4px 20px -10px var(--cyan);
         }
         .title-group h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--cyan);
-            letter-spacing: 4px;
-            font-size: 2.2rem;
-            text-transform: uppercase;
-            text-shadow: var(--cyan-glow);
+            font-family: 'Orbitron', sans-serif; color: var(--cyan); letter-spacing: 4px;
+            font-size: 2.2rem; text-transform: uppercase; text-shadow: var(--cyan-glow);
         }
         .title-group p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;
+            text-transform: uppercase; letter-spacing: 2px;
         }
         .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(57, 255, 20, 0.05);
-            border: 1px solid var(--green);
-            padding: 0.7rem 1.5rem;
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
-            color: var(--green);
-            box-shadow: var(--green-glow);
-            font-size: 1.1rem;
+            display: flex; align-items: center; gap: 12px; background: rgba(57, 255, 20, 0.05);
+            border: 1px solid var(--green); padding: 0.7rem 1.5rem; border-radius: 4px;
+            font-family: 'Orbitron', sans-serif; color: var(--green); box-shadow: var(--green-glow); font-size: 1.1rem;
         }
-        .pulse {
-            width: 12px;
-            height: 12px;
-            background-color: var(--green);
-            border-radius: 50%;
-            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-        @keyframes ping {
-            75%, 100% { transform: scale(2.5); opacity: 0; }
-        }
+        .pulse { width: 12px; height: 12px; background-color: var(--green); border-radius: 50%; animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        @keyframes ping { 75%, 100% { transform: scale(2.5); opacity: 0; } }
 
         /* --- Master Grid --- */
-        .master-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .dashboard-wrapper {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 1.5rem;
-        }
+        .master-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .dashboard-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; }
 
         /* --- Panels --- */
         .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 4px 15px rgba(0, 0, 0, 0.5);
-            position: relative;
+            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 1.5rem; backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 4px 15px rgba(0, 0, 0, 0.5); position: relative;
         }
         .panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-            opacity: 0.5;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0.5;
         }
         .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--cyan);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: space-between;
+            font-family: 'Orbitron', sans-serif; color: var(--cyan); font-size: 1rem; margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;
+            text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between;
         }
 
-        /* --- Giant Price Panel --- */
-        .price-panel {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-        }
-        .live-price {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 5rem;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            margin: 1rem 0;
-            transition: color 0.3s;
-        }
+        /* --- Multi-Price Grid --- */
+        .price-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center; }
+        .mini-price-box { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 4px; }
+        .live-price { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; color: #fff; margin-top: 0.5rem; transition: color 0.3s; }
         .price-up { color: var(--green); text-shadow: var(--green-glow); }
         .price-down { color: var(--red); text-shadow: var(--red-glow); }
         
-        /* --- Active Trade Panel --- */
-        .trade-data {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            width: 100%;
+        /* --- Active Trade Panel (Multi) --- */
+        .trade-card {
+            background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem; border-radius: 4px; margin-bottom: 0.5rem; display: grid;
+            grid-template-columns: 1fr 1fr 1fr; align-items: center; text-align: center;
         }
-        .data-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .data-label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
-        .data-val { font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem; }
-        .pnl-giant { font-family: 'Orbitron', sans-serif; font-size: 3rem; margin-top: 1rem; }
+        .data-label { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; }
+        .data-val { font-size: 1.1rem; font-weight: 700; margin-top: 0.3rem; }
 
         /* --- Top KPIs --- */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.2rem;
-            border-radius: 4px;
-            text-align: center;
-        }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.2rem; border-radius: 4px; text-align: center; }
         .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
         .stat-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
-        .val-cyan { color: var(--cyan); }
-        .val-green { color: var(--green); }
-        .val-red { color: var(--red); }
-        .val-warn { color: var(--warning); }
+        .val-cyan { color: var(--cyan); } .val-green { color: var(--green); } .val-red { color: var(--red); } .val-warn { color: var(--warning); }
 
         /* --- Chart & Table Section --- */
         .chart-container { position: relative; height: 350px; width: 100%; }
-        .tv-container { height: 500px; width: 100%; margin-bottom: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; box-shadow: var(--cyan-glow); }
+        .tv-multi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; height: 450px; margin-bottom: 1.5rem; }
+        .tv-wrapper { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; box-shadow: var(--cyan-glow); height: 100%; }
         
         .table-container { max-height: 400px; overflow-y: auto; }
         .table-container::-webkit-scrollbar { width: 6px; }
@@ -228,91 +137,73 @@
     <header>
         <div class="title-group">
             <h1>project neptune</h1>
-            <p>COMMAND CONSOLE // ORBITAL VIEW</p>
+            <p>COMMAND CONSOLE // MULTI-PAIR FLEET</p>
         </div>
         <div class="status-badge" id="live-status">
             <div class="pulse"></div>
-            <span id="status-text">SYSTEM ARMED & LIVE</span>
+            <span id="status-text">FLEET ARMED & LIVE</span>
         </div>
     </header>
 
-    <!-- TOP ROW: TICKER & TRADE STATUS -->
+    <!-- TOP ROW: MULTI-TICKER & TRADE STATUS -->
     <div class="master-grid">
-        <div class="panel price-panel">
-            <div class="panel-title" style="border: none; margin: 0; font-size: 1.5rem;">ETH/USDT LIVE INDEX</div>
-            <div class="live-price" id="giant-price">LOADING...</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem;">BINANCE.US WEBSOCKET STREAM</div>
+        <div class="panel">
+            <div class="panel-title" style="border: none; margin-bottom: 0.5rem; font-size: 1.2rem;">BINANCE.US WEBSOCKET MATRIX</div>
+            <div class="price-grid">
+                <div class="mini-price-box">
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">BTC/USDT</div>
+                    <div id="price-btc" class="live-price">--</div>
+                </div>
+                <div class="mini-price-box">
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">ETH/USDT</div>
+                    <div id="price-eth" class="live-price">--</div>
+                </div>
+                <div class="mini-price-box">
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">DOGE/USDT</div>
+                    <div id="price-doge" class="live-price">--</div>
+                </div>
+            </div>
         </div>
 
-        <div class="panel" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <div class="panel-title" style="width: 100%;">
-                <span>ACTIVE DEPLOYMENT STATUS</span>
-                <span id="trade-status-badge" class="badge badge-hold">FLAT</span>
+        <div class="panel" style="display: flex; flex-direction: column;">
+            <div class="panel-title">
+                <span>ACTIVE DEPLOYMENTS (33% SLICES)</span>
+                <span id="trade-status-badge" class="badge badge-hold">0/3 ALLOCATED</span>
             </div>
             
-            <div id="no-trade-view" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                <div style="font-size: 2rem; color: var(--text-muted); font-family: 'Orbitron';">AWAITING ALPHA SIGNAL</div>
-            </div>
-
-            <div id="active-trade-view" style="display: none; width: 100%;">
-                <div class="trade-data">
-                    <div class="data-box">
-                        <div class="data-label">Entry Price</div>
-                        <div class="data-val val-cyan" id="trade-entry">$0.00</div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-label">Breakeven Shield / Stop</div>
-                        <div class="data-val val-warn" id="trade-stop">$0.00</div>
-                    </div>
+            <div id="active-trades-container" style="display: flex; flex-direction: column; gap: 0.5rem; height: 100%; overflow-y: auto;">
+                <div id="no-trade-view" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                    <div style="font-size: 1.5rem; color: var(--text-muted); font-family: 'Orbitron';">AWAITING ALPHA SIGNALS</div>
                 </div>
-                <div style="text-align: center;">
-                    <div class="data-label" style="margin-top: 1rem;">UNREALIZED PnL</div>
-                    <div class="pnl-giant" id="trade-pnl">0.00%</div>
-                </div>
+                <!-- Dynamic Trade Cards injected here -->
             </div>
         </div>
     </div>
 
-    <!-- MIDDLE ROW: TRADINGVIEW -->
-    <div class="tv-container">
-        <!-- TradingView Widget BEGIN -->
-        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
-          <div id="tradingview_eth" style="height: 100%; width: 100%;"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-          <script type="text/javascript">
-          new TradingView.widget({
-          "autosize": true,
-          "symbol": "BINANCEUS:ETHUSDT",
-          "interval": "15",
-          "timezone": "Etc/UTC",
-          "theme": "dark",
-          "style": "1",
-          "locale": "en",
-          "enable_publishing": false,
-          "backgroundColor": "rgba(10, 15, 25, 0.85)",
-          "gridColor": "rgba(0, 229, 255, 0.05)",
-          "hide_top_toolbar": false,
-          "hide_legend": false,
-          "save_image": false,
-          "container_id": "tradingview_eth",
-          "studies": [
-            "RSI@tv-basicstudies",
-            "EMACross@tv-basicstudies"
-          ]
-        });
-          </script>
+    <!-- MIDDLE ROW: TRIPLE TRADINGVIEW GRID -->
+    <div class="tv-multi-grid">
+        <!-- BTC Chart -->
+        <div class="tv-wrapper">
+            <div id="tradingview_btc" style="height: 100%; width: 100%;"></div>
         </div>
-        <!-- TradingView Widget END -->
+        <!-- ETH Chart -->
+        <div class="tv-wrapper">
+            <div id="tradingview_eth" style="height: 100%; width: 100%;"></div>
+        </div>
+        <!-- DOGE Chart -->
+        <div class="tv-wrapper">
+            <div id="tradingview_doge" style="height: 100%; width: 100%;"></div>
+        </div>
     </div>
 
     <!-- KPI GRID -->
     <div class="kpi-grid">
         <div class="stat-box">
-            <div class="stat-label">Model Inference</div>
+            <div class="stat-label">Model Inference (Last)</div>
             <div class="stat-value val-cyan" id="score-val">0.0000</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">Total Cycles</div>
+            <div class="stat-label">Total Fleet Cycles</div>
             <div class="stat-value" id="count-val">0</div>
         </div>
         <div class="stat-box">
@@ -329,19 +220,20 @@
         <!-- Main Content Area -->
         <div class="main-content">
             <div class="panel" style="margin-bottom: 1.5rem;">
-                <div class="panel-title">Alpha Matrix Brainwave (15m Intervals)</div>
+                <div class="panel-title">Alpha Matrix Brainwave (15m Concurrency)</div>
                 <div class="chart-container">
                     <canvas id="scoreChart"></canvas>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-title">System Telemetry Log</div>
+                <div class="panel-title">Fleet Telemetry Log</div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
+                                <th>Asset</th>
                                 <th>Action</th>
                                 <th>Score</th>
                                 <th>Log Output</th>
@@ -358,29 +250,29 @@
         <!-- Sidebar Area -->
         <div class="sidebar">
             <div class="panel">
-                <div class="panel-title">Engine Config</div>
+                <div class="panel-title">Fleet Engine Config</div>
                 <div class="mini-stat">
                     <span style="color: var(--text-muted)">Active Mode</span>
                     <strong class="val-cyan" id="mode-val">PENDING</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Veto Threshold</span>
+                    <span style="color: var(--text-muted)">ETH Veto</span>
                     <strong>0.4807</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Target Asset</span>
-                    <strong>ETH/USDT</strong>
+                    <span style="color: var(--text-muted)">BTC Veto</span>
+                    <strong>0.4735</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Execution Base</span>
-                    <strong>ONNX Runtime</strong>
+                    <span style="color: var(--text-muted)">DOGE Veto</span>
+                    <strong>0.4864</strong>
                 </div>
             </div>
 
             <div class="panel">
                 <div class="panel-title">Execution Analytics</div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Action Rate</span>
+                    <span style="color: var(--text-muted)">Fleet Action Rate</span>
                     <strong id="exec-rate-val">0%</strong>
                 </div>
                 <div class="mini-stat">
@@ -388,20 +280,34 @@
                     <strong id="avg-score-val">0.0000</strong>
                 </div>
                 <div class="mini-stat">
-                    <span style="color: var(--text-muted)">Candles Held (Avg)</span>
-                    <strong class="val-cyan">--</strong>
+                    <span style="color: var(--text-muted)">Architecture</span>
+                    <strong class="val-cyan">FCFS 33% Slices</strong>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Script Block -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // Supabase Init[cite: 11]
+        // Initialize TradingView Widgets for Fleet[cite: 13]
+        const tvConfig = {
+            "autosize": true, "interval": "15", "timezone": "Etc/UTC", "theme": "dark",
+            "style": "1", "locale": "en", "enable_publishing": false,
+            "backgroundColor": "rgba(10, 15, 25, 0.85)", "gridColor": "rgba(0, 229, 255, 0.05)",
+            "hide_top_toolbar": true, "hide_legend": true, "save_image": false,
+            "studies": ["EMACross@tv-basicstudies"]
+        };
+        new TradingView.widget({ ...tvConfig, "symbol": "BINANCEUS:BTCUSDT", "container_id": "tradingview_btc" });
+        new TradingView.widget({ ...tvConfig, "symbol": "BINANCEUS:ETHUSDT", "container_id": "tradingview_eth" });
+        new TradingView.widget({ ...tvConfig, "symbol": "BINANCEUS:DOGEUSDT", "container_id": "tradingview_doge" });
+
+        // Supabase Init[cite: 13]
         var SUPABASE_URL = 'https://bpizkikscieyhzajrrrg.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_UwkvMmq91Y5jS1PEJ9IE_w_vN5-JWUP';
         var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // DOM Elements[cite: 11]
+        // DOM Elements
         const logBody = document.getElementById('log-body');
         const countVal = document.getElementById('count-val');
         const scoreVal = document.getElementById('score-val');
@@ -410,138 +316,128 @@
         const holdVal = document.getElementById('hold-val');
         const execRateVal = document.getElementById('exec-rate-val');
         const avgScoreVal = document.getElementById('avg-score-val');
-        const giantPrice = document.getElementById('giant-price');
-
-        // Trade Panel Elements
+        const tradesContainer = document.getElementById('active-trades-container');
         const noTradeView = document.getElementById('no-trade-view');
-        const activeTradeView = document.getElementById('active-trade-view');
         const tradeStatusBadge = document.getElementById('trade-status-badge');
-        const tradeEntry = document.getElementById('trade-entry');
-        const tradeStop = document.getElementById('trade-stop');
-        const tradePnl = document.getElementById('trade-pnl');
 
-        // State Tracking[cite: 11]
-        let totalCount = 0;
-        let execCount = 0;
-        let holdCount = 0;
-        let scoreSum = 0;
-        let currentEthPrice = 0;
-        let activePosition = null;
-        let lastPrice = 0;
-        
-        // --- BINANCE WEBSOCKET FOR GIANT PRICE ---
-        const ws = new WebSocket('wss://stream.binance.us:9443/ws/ethusdt@ticker');
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            currentEthPrice = parseFloat(data.c);
-            
-            giantPrice.innerText = `$${currentEthPrice.toFixed(2)}`;
-            
-            if (currentEthPrice > lastPrice) {
-                giantPrice.className = 'live-price price-up';
-            } else if (currentEthPrice < lastPrice) {
-                giantPrice.className = 'live-price price-down';
-            }
-            lastPrice = currentEthPrice;
+        // State Tracking
+        let totalCount = 0; let execCount = 0; let holdCount = 0; let scoreSum = 0;
+        let activePositions = [];
 
-            // Recalculate PnL instantly on every websocket tick if in a trade
-            if (activePosition) updateLivePnL();
+        // Market Data State
+        const marketData = {
+            'BTC/USDT': { price: 0, last: 0, el: document.getElementById('price-btc'), stream: 'btcusdt@ticker' },
+            'ETH/USDT': { price: 0, last: 0, el: document.getElementById('price-eth'), stream: 'ethusdt@ticker' },
+            'DOGE/USDT': { price: 0, last: 0, el: document.getElementById('price-doge'), stream: 'dogeusdt@ticker' }
         };
 
-        // Chart.js Setup[cite: 11]
+        // --- BINANCE WEBSOCKETS (MULTI-PAIR) ---
+        Object.keys(marketData).forEach(ticker => {
+            const asset = marketData[ticker];
+            const ws = new WebSocket(`wss://stream.binance.us:9443/ws/${asset.stream}`);
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                asset.price = parseFloat(data.c);
+                
+                // Format appropriately (DOGE needs more decimals)
+                const decimals = ticker === 'DOGE/USDT' ? 4 : 2;
+                asset.el.innerText = `$${asset.price.toFixed(decimals)}`;
+                
+                if (asset.price > asset.last) asset.el.className = 'live-price price-up';
+                else if (asset.price < asset.last) asset.el.className = 'live-price price-down';
+                asset.last = asset.price;
+
+                updateLivePnL(ticker);
+            };
+        });
+
+        // Chart.js Setup (Multi-Dataset)[cite: 13]
         const ctx = document.getElementById('scoreChart').getContext('2d');
         const scoreChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [
-                    {
-                        label: 'Inference Score',
-                        data: [],
-                        borderColor: '#00e5ff',
-                        backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#fff',
-                        pointRadius: 2,
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Veto Threshold',
-                        data: [],
-                        borderColor: '#ff003c',
-                        borderWidth: 1,
-                        borderDash: [5, 5],
-                        pointRadius: 0,
-                        fill: false
-                    }
-                ]
-            },
+            type: 'scatter',
+            data: { datasets: [{ label: 'Engine Inference Pulses', data: [], backgroundColor: '#00e5ff', pointRadius: 4 }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 scales: {
-                    x: { ticks: { color: '#6b7280', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { type: 'category', ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,0.05)' } },
                     y: { min: 0, max: 1, ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                 },
-                plugins: {
-                    legend: { labels: { color: '#e5e7eb', font: { family: 'Fira Code' } } },
-                    tooltip: { mode: 'index', intersect: false }
-                }
+                plugins: { legend: { display: false } }
             }
         });
 
-        function updateChart(timestamp, score) {
+        function updateChart(timestamp, score, ticker) {
             const timeStr = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            scoreChart.data.labels.push(timeStr);
-            scoreChart.data.datasets[0].data.push(score);
-            scoreChart.data.datasets[1].data.push(0.4807); 
-            if (scoreChart.data.labels.length > 50) {
+            
+            // Add label if it doesn't exist
+            if (!scoreChart.data.labels.includes(timeStr)) {
+                scoreChart.data.labels.push(timeStr);
+            }
+            
+            scoreChart.data.datasets[0].data.push({ x: timeStr, y: score, ticker: ticker });
+            
+            if (scoreChart.data.labels.length > 30) {
                 scoreChart.data.labels.shift();
-                scoreChart.data.datasets[0].data.shift();
-                scoreChart.data.datasets[1].data.shift();
+                scoreChart.data.datasets[0].data = scoreChart.data.datasets[0].data.filter(d => scoreChart.data.labels.includes(d.x));
             }
             scoreChart.update();
         }
 
-        function updateLivePnL() {
-            if (!activePosition || currentEthPrice === 0) return;
-            const entry = parseFloat(activePosition.entry_price);
-            const profitPct = ((currentEthPrice - entry) / entry) * 100;
+        function updateLivePnL(ticker) {
+            const pos = activePositions.find(p => p.ticker === ticker);
+            if (!pos || marketData[ticker].price === 0) return;
             
-            tradePnl.innerText = `${profitPct > 0 ? '+' : ''}${profitPct.toFixed(3)}%`;
-            if (profitPct > 0) {
-                tradePnl.className = 'pnl-giant val-green';
-                tradeStatusBadge.innerText = 'IN PROFIT';
-                tradeStatusBadge.className = 'badge badge-exec';
-            } else {
-                tradePnl.className = 'pnl-giant val-red';
-                tradeStatusBadge.innerText = 'DRAWDOWN';
-                tradeStatusBadge.className = 'badge badge-err';
-            }
+            const pnlEl = document.getElementById(`pnl-${pos.id}`);
+            if (!pnlEl) return;
+
+            const entry = parseFloat(pos.entry_price);
+            const profitPct = ((marketData[ticker].price - entry) / entry) * 100;
+            
+            pnlEl.innerText = `${profitPct > 0 ? '+' : ''}${profitPct.toFixed(3)}%`;
+            pnlEl.className = `data-val ${profitPct > 0 ? 'val-green' : 'val-red'}`;
         }
 
         async function fetchActivePositions() {
-            const { data, error } = await supabase
-                .from('neptune_positions')
-                .select('*')
-                .eq('status', 'open')
-                .limit(1);
+            const { data, error } = await supabase.from('neptune_positions').select('*').eq('status', 'open');
+            if (error) return;
 
-            if (data && data.length > 0) {
-                activePosition = data[0];
+            activePositions = data || [];
+            
+            if (activePositions.length > 0) {
                 noTradeView.style.display = 'none';
-                activeTradeView.style.display = 'block';
-                tradeEntry.innerText = `$${parseFloat(activePosition.entry_price).toFixed(2)}`;
-                tradeStop.innerText = `$${parseFloat(activePosition.stop_loss).toFixed(2)}`;
-                tradeStatusBadge.innerText = 'IN TRADE';
+                tradeStatusBadge.innerText = `${activePositions.length}/3 ALLOCATED`;
                 tradeStatusBadge.className = 'badge badge-exec';
+                
+                // Keep the no-trade view hidden, remove old cards
+                const cards = Array.from(tradesContainer.children).filter(el => el.id !== 'no-trade-view');
+                cards.forEach(c => c.remove());
+
+                activePositions.forEach(pos => {
+                    const card = document.createElement('div');
+                    card.className = 'trade-card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="data-label">${pos.ticker} Entry</div>
+                            <div class="data-val val-cyan">$${parseFloat(pos.entry_price).toFixed(pos.ticker==='DOGE/USDT'?4:2)}</div>
+                        </div>
+                        <div>
+                            <div class="data-label">Breakeven / Stop</div>
+                            <div class="data-val val-warn">$${parseFloat(pos.stop_loss).toFixed(pos.ticker==='DOGE/USDT'?4:2)}</div>
+                        </div>
+                        <div>
+                            <div class="data-label">Live PnL</div>
+                            <div class="data-val" id="pnl-${pos.id}">--%</div>
+                        </div>
+                    `;
+                    tradesContainer.appendChild(card);
+                    updateLivePnL(pos.ticker); // Init PnL calculation immediately
+                });
             } else {
-                activePosition = null;
                 noTradeView.style.display = 'flex';
-                activeTradeView.style.display = 'none';
-                tradeStatusBadge.innerText = 'FLAT';
+                tradeStatusBadge.innerText = '0/3 ALLOCATED';
                 tradeStatusBadge.className = 'badge badge-hold';
+                const cards = Array.from(tradesContainer.children).filter(el => el.id !== 'no-trade-view');
+                cards.forEach(c => c.remove());
             }
         }
 
@@ -552,14 +448,14 @@
             const scoreDisplay = score.toFixed(4);
             
             let badgeClass = 'badge-hold';
-            if (log.action === 'execute') badgeClass = 'badge-exec';
+            if (log.action === 'execute' || log.action === 'win' || log.action === 'loss' || log.action === 'breakeven') badgeClass = 'badge-exec';
             if (log.action === 'error') badgeClass = 'badge-err';
-            if (log.action === 'win' || log.action === 'loss' || log.action === 'breakeven') badgeClass = 'badge-exec';
             
             tr.innerHTML = `
                 <td style="color: var(--text-muted);">${date}</td>
+                <td class="val-cyan" style="font-weight: bold;">${log.ticker || 'SYS'}</td>
                 <td><span class="badge ${badgeClass}">${log.action}</span></td>
-                <td class="${score >= 0.4807 ? 'val-green' : 'val-cyan'}">${scoreDisplay}</td>
+                <td>${score > 0 ? scoreDisplay : '--'}</td>
                 <td style="opacity: 0.8;">${log.log_message}</td>
             `;
             
@@ -569,66 +465,41 @@
                 totalCount++;
                 if (log.action === 'execute') execCount++;
                 if (log.action === 'hold' || log.action === 'shield_skip') holdCount++;
-                scoreSum += score;
+                if (score > 0) scoreSum += score;
 
                 countVal.innerText = totalCount;
                 execVal.innerText = execCount;
                 holdVal.innerText = holdCount;
-                scoreVal.innerText = scoreDisplay;
-                modeVal.innerText = log.mode.toUpperCase();
+                if (score > 0) scoreVal.innerText = scoreDisplay;
                 
+                modeVal.innerText = (log.mode || 'LIVE').toUpperCase();
                 if (log.mode === 'paper') modeVal.className = 'val-cyan';
                 if (log.mode === 'live') modeVal.className = 'val-green';
 
                 const execRate = ((execCount / totalCount) * 100).toFixed(1);
                 execRateVal.innerText = `${execRate}%`;
-                avgScoreVal.innerText = (scoreSum / totalCount).toFixed(4);
+                
+                // Prevent division by zero for avg score
+                const scoreCount = totalCount - holdCount + execCount; // roughly
+                avgScoreVal.innerText = (scoreSum / Math.max(1, (totalCount - holdCount))).toFixed(4);
 
-                if (!isInitialLoad) updateChart(log.created_at, score);
+                if (!isInitialLoad && score > 0) updateChart(log.created_at, score, log.ticker);
             }
         }
 
         async function fetchInitialState() {
-            // Get Logs
-            const { data, error } = await supabase
-                .from('neptune_logs')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(50);
-            
-            if (error) {
-                console.error("Supabase Error Details:", error);
-                return;
-            }
-
+            const { data, error } = await supabase.from('neptune_logs').select('*').order('created_at', { ascending: false }).limit(50);
             if (data && data.length > 0) {
                 const chronologicalData = [...data].reverse();
-                chronologicalData.forEach(log => {
-                    if (log.inference_score > 0) updateChart(log.created_at, Number(log.inference_score));
-                });
+                chronologicalData.forEach(log => { if (log.inference_score > 0) updateChart(log.created_at, Number(log.inference_score), log.ticker); });
                 chronologicalData.forEach(log => renderRow(log, true));
             }
-
-            // Check if holding a position
             await fetchActivePositions();
         }
 
         function subscribeToTelemetry() {
-            // Listen for Logs
-            supabase
-                .channel('neptune_logs_channel')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'neptune_logs' }, payload => {
-                    renderRow(payload.new);
-                })
-                .subscribe();
-
-            // Listen for Position changes (Open/Close)
-            supabase
-                .channel('neptune_positions_channel')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'neptune_positions' }, payload => {
-                    fetchActivePositions();
-                })
-                .subscribe();
+            supabase.channel('neptune_logs_channel').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'neptune_logs' }, payload => renderRow(payload.new)).subscribe();
+            supabase.channel('neptune_positions_channel').on('postgres_changes', { event: '*', schema: 'public', table: 'neptune_positions' }, () => fetchActivePositions()).subscribe();
         }
 
         fetchInitialState();
